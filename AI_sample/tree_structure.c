@@ -23,7 +23,7 @@ struct tree_node* create_node(int map[][7])
 In insert_child function, it automatically creates nodes, 
 makes maps and inerts it into child nodes so you do not need to make child map using malloc.
 you can make all 7 child nodes just uning insert_child function passing only argument as root node
-But it can have child node as NULL when child can not have a place to put stone any more*/
+But it can have some child nodes as NULL when child can not have a place to put stone any more*/
 void insert_child(struct tree_node *root)
 {
 	int result;
