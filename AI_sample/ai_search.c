@@ -18,7 +18,7 @@ void ai_search_function(int map[][7])
 
 struct tree_node* make_full_tree(int map[][7])
 {
-	int aa;
+	
 }
 
 
