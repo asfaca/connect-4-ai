@@ -4,14 +4,14 @@
 struct tree_node{
 	int **map;				//map[6][7]
 	int evaluation_value;		//default value is -1
-
-	struct node *child1;
-	struct node *child2;
-	struct node *child3;
-	struct node *child4;
-	struct node *child5;
-	struct node *child6;
-	struct node *child7;
+	
+	struct tree_node *child1;
+	struct tree_node *child2;
+	struct tree_node *child3;
+	struct tree_node *child4;
+	struct tree_node *child5;
+	struct tree_node *child6;
+	struct tree_node *child7;
 };
 
 //Search algorithm.
@@ -31,9 +31,9 @@ void ai_rule_function(int map[][7]);
 int decide_win_or_lose_or_continue(int map[][7]);
 
 //Tree sturcture functions
-struct tree_node* create_root_node(int map[][7]);//need to fix arguments child to int map[][]
-void insert_child(struct tree_node *root, int child_map1[][7],
-					 int child_map2[][7], int child_map3[][7],
-					 int child_map4[][7] , int child_map5[][7],
-					 int child_map6[][7], int child_map7[][7]);
+struct tree_node* create_node(int map[][7]);//need to fix arguments child to int map[][]
+void insert_child(struct tree_node *root);
 void mem_free_tree(struct tree_node *root);
+void free_map(int **map);
+int** duplicate_root_map(int **root_map);
+int modify_child_map(int **child_map, int number);
