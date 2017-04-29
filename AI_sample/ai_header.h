@@ -28,7 +28,7 @@ void evaluation_function_version_1(struct tree_node *node);
 int min_max_function(struct tree_node *node);
 void select_map(int map[][7], int select);
 
-//Rule algorithm.
+//Rule algorithm..
 void ai_rule_function(int map[][7]);
 
 //Decide win, lose or continue
