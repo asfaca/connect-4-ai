@@ -8,6 +8,7 @@ struct tree_node{
 	int evaluation_value;		//default value is -1
 	int is_in_tree;
 	int is_it_leaf_node;
+	int is_it_winorlose;
 	
 	struct tree_node *child1;
 	struct tree_node *child2;
@@ -37,7 +38,7 @@ void ai_rule_function(int map[][7]);
 int decide_win_or_lose_or_continue(int map[][7]);
 
 //Tree sturcture functions
-struct tree_node* create_node(int map[][7], int intree);//need to fix arguments child to int map[][]
+struct tree_node* create_node(int map[][7], int intree, int winorlose);//need to fix arguments child to int map[][]
 void insert_child(struct tree_node *root);
 int* mem_free_tree(struct tree_node *root);
 void free_map(int **map);

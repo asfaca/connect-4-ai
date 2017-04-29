@@ -1,6 +1,6 @@
 #include "ai_header.h"
 
-struct tree_node* create_node(int map[][7], int intree)
+struct tree_node* create_node(int map[][7], int intree, int winorlose)
 {
 	struct tree_node *node = (struct tree_node*)malloc(sizeof(struct tree_node));
 	if (node = NULL)
@@ -10,6 +10,7 @@ struct tree_node* create_node(int map[][7], int intree)
 	node->evaluation_value = -999;	//default value
 	node->is_in_tree = intree;
 	node->is_it_leaf_node = -999;
+	node->is_it_winorlose = winorlose;
 	node->child1 = NULL;
 	node->child2 = NULL;
 	node->child3 = NULL;
@@ -30,17 +31,15 @@ But it can have some child nodes as empty node which has not_intree flag and nul
 when child can not have a place to put stone any more*/
 void insert_child(struct tree_node *root)
 {
-	int result;
-
-	if (root->is_in_tree == FALSE)
+	if (root->is_in_tree == FALSE || root->is_it_winorlose == TRUE)
 	{
-		root->child1 = create_node(NULL, FALSE);
-		root->child2 = create_node(NULL, FALSE);
-		root->child3 = create_node(NULL, FALSE);
-		root->child4 = create_node(NULL, FALSE);
-		root->child5 = create_node(NULL, FALSE);
-		root->child6 = create_node(NULL, FALSE);
-		root->child7 = create_node(NULL, FALSE);
+		root->child1 = create_node(NULL, FALSE, FALSE);
+		root->child2 = create_node(NULL, FALSE, FALSE);
+		root->child3 = create_node(NULL, FALSE, FALSE);
+		root->child4 = create_node(NULL, FALSE, FALSE);
+		root->child5 = create_node(NULL, FALSE, FALSE);
+		root->child6 = create_node(NULL, FALSE, FALSE);
+		root->child7 = create_node(NULL, FALSE, FALSE);
 		connect_siblings(root);
 	}
 	else
@@ -52,68 +51,83 @@ void insert_child(struct tree_node *root)
 		int **child_map5 = duplicate_root_map(root->map);
 		int **child_map6 = duplicate_root_map(root->map);
 		int **child_map7 = duplicate_root_map(root->map);
+		int result; // 1 -> can move, 0 -> can not move,  2 -> state is win or lose
 
 		result = modify_child_map(child_map1, 1);
 		if (result == 1)
-			root->child1 = create_node(child_map1, TRUE);
+			root->child1 = create_node(child_map1, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map1, TRUE, TRUE);
 		else
 		{
 			free_map(child_map1);
-			root->child1 = create_node(NULL, FALSE);
+			root->child1 = create_node(NULL, FALSE, FALSE);
 		}
 
 		result = modify_child_map(child_map2, 2);
 		if (result == 1)
-			root->child1 = create_node(child_map2, TRUE);
+			root->child1 = create_node(child_map2, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map2, TRUE, TRUE);
 		else
 		{
 			free_map(child_map2);
-			root->child2 = create_node(NULL, FALSE);
+			root->child2 = create_node(NULL, FALSE, FALSE);
 		}
 		
 		result = modify_child_map(child_map3, 3);
 		if (result == 1)
-			root->child1 = create_node(child_map3, TRUE);
+			root->child1 = create_node(child_map3, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map3, TRUE, TRUE);
 		else
 		{
 			free_map(child_map3);
-			root->child3 = create_node(NULL, FALSE);
+			root->child3 = create_node(NULL, FALSE, FALSE);
 		}
 		
 		result = modify_child_map(child_map4, 4);
 		if (result == 1)
-			root->child1 = create_node(child_map4, TRUE);
+			root->child1 = create_node(child_map4, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map4, TRUE, TRUE);
 		else
 		{
 			free_map(child_map4);
-			root->child4 = create_node(NULL, FALSE);
+			root->child4 = create_node(NULL, FALSE, FALSE);
 		}
 		
 		result = modify_child_map(child_map5, 5);
 		if (result == 1)
-			root->child1 = create_node(child_map5, TRUE);
+			root->child1 = create_node(child_map5, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map5, TRUE, TRUE);
 		else
 		{
 			free_map(child_map5);
-			root->child5 = create_node(NULL, FALSE);
+			root->child5 = create_node(NULL, FALSE, FALSE);
 		}
 		
 		result = modify_child_map(child_map6, 6);
 		if (result == 1)
-			root->child1 = create_node(child_map6, TRUE);
+			root->child1 = create_node(child_map6, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map6, TRUE, TRUE);
 		else
 		{
 			free_map(child_map6);
-			root->child6 = create_node(NULL, FALSE);
+			root->child6 = create_node(NULL, FALSE, FALSE);
 		}
 		
 		result = modify_child_map(child_map7, 7);
 		if (result == 1)
-			root->child1 = create_node(child_map7, TRUE);
+			root->child1 = create_node(child_map7, TRUE, FALSE);
+		else if (result == 2)
+			root->child1 = create_node(child_map7, TRUE, TRUE);
 		else
 		{
 			free_map(child_map7);
-			root->child7 = create_node(NULL, FALSE);
+			root->child7 = create_node(NULL, FALSE, FALSE);
 		}
 
 		connect_siblings(root);
@@ -140,14 +154,17 @@ int** duplicate_root_map(int **root_map)
 int modify_child_map(int **child_map, int number)
 {
 	number--;
-	int i;
+	int i, result;
 	for (i = 0; i < 6; i++)
 	{
 		if (child_map[i][number] == 0)
 		{
 			child_map[i][number] = 2;
 			//it can move and retun 1 as success
-			return 1;
+			if ((result = decide_win_or_lose_or_continue(child_map)) == 0)
+				return 1;
+			else  //it is the case that it doesn;t need to make child nodes because after modifiying map, state of map is win or lose.  
+				return 2;
 		}
 		if (i == 5)
 		{
