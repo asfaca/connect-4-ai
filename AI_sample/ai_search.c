@@ -21,10 +21,11 @@ struct tree_node* make_full_tree(int map[][7])
 	
 }
 
-
-void evaluation_function(struct tree_node *node)
+//count most winning line
+void evaluation_function_version_1(struct tree_node *node)
 {
-
+	node->evaluation_value = 0;
+	
 }
 
 int min_max_function(struct tree_node *node)
