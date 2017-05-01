@@ -1,6 +1,6 @@
 #include "ai_header.h"
 
-struct tree_node* create_node(int map[][7], int intree, int winorlose)
+struct tree_node* create_node(int map[][7], int intree, int winorlose, int minmax)
 {
 	struct tree_node *node = (struct tree_node*)malloc(sizeof(struct tree_node));
 	if (node = NULL)
@@ -9,7 +9,7 @@ struct tree_node* create_node(int map[][7], int intree, int winorlose)
 	node->map = map;
 	node->evaluation_value = -999;	//default value
 	node->is_in_tree = intree;
-	node->is_it_leaf_node = -999;
+	node->min_or_max_or_leaf = minmax;
 	node->is_it_winorlose = winorlose;
 	node->child1 = NULL;
 	node->child2 = NULL;
@@ -29,17 +29,17 @@ makes maps and inerts it into child nodes so you do not need to make child map u
 you can make all 7 child nodes just uning insert_child function passing only argument as root node
 But it can have some child nodes as empty node which has not_intree flag and null value on map pointer 
 when child can not have a place to put stone any more*/
-void insert_child(struct tree_node *root)
+void insert_child(struct tree_node *root, int minmax)
 {
 	if (root->is_in_tree == FALSE || root->is_it_winorlose == TRUE)
 	{
-		root->child1 = create_node(NULL, FALSE, FALSE);
-		root->child2 = create_node(NULL, FALSE, FALSE);
-		root->child3 = create_node(NULL, FALSE, FALSE);
-		root->child4 = create_node(NULL, FALSE, FALSE);
-		root->child5 = create_node(NULL, FALSE, FALSE);
-		root->child6 = create_node(NULL, FALSE, FALSE);
-		root->child7 = create_node(NULL, FALSE, FALSE);
+		root->child1 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child2 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child3 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child4 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child5 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child6 = create_node(NULL, FALSE, FALSE, minmax);
+		root->child7 = create_node(NULL, FALSE, FALSE, minmax);
 		connect_siblings(root);
 	}
 	else
@@ -55,79 +55,79 @@ void insert_child(struct tree_node *root)
 
 		result = modify_child_map(child_map1, 1);
 		if (result == 1)
-			root->child1 = create_node(child_map1, TRUE, FALSE);
+			root->child1 = create_node(child_map1, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map1, TRUE, TRUE);
+			root->child1 = create_node(child_map1, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map1);
-			root->child1 = create_node(NULL, FALSE, FALSE);
+			root->child1 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 
 		result = modify_child_map(child_map2, 2);
 		if (result == 1)
-			root->child1 = create_node(child_map2, TRUE, FALSE);
+			root->child1 = create_node(child_map2, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map2, TRUE, TRUE);
+			root->child1 = create_node(child_map2, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map2);
-			root->child2 = create_node(NULL, FALSE, FALSE);
+			root->child2 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 		
 		result = modify_child_map(child_map3, 3);
 		if (result == 1)
-			root->child1 = create_node(child_map3, TRUE, FALSE);
+			root->child1 = create_node(child_map3, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map3, TRUE, TRUE);
+			root->child1 = create_node(child_map3, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map3);
-			root->child3 = create_node(NULL, FALSE, FALSE);
+			root->child3 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 		
 		result = modify_child_map(child_map4, 4);
 		if (result == 1)
-			root->child1 = create_node(child_map4, TRUE, FALSE);
+			root->child1 = create_node(child_map4, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map4, TRUE, TRUE);
+			root->child1 = create_node(child_map4, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map4);
-			root->child4 = create_node(NULL, FALSE, FALSE);
+			root->child4 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 		
 		result = modify_child_map(child_map5, 5);
 		if (result == 1)
-			root->child1 = create_node(child_map5, TRUE, FALSE);
+			root->child1 = create_node(child_map5, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map5, TRUE, TRUE);
+			root->child1 = create_node(child_map5, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map5);
-			root->child5 = create_node(NULL, FALSE, FALSE);
+			root->child5 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 		
 		result = modify_child_map(child_map6, 6);
 		if (result == 1)
-			root->child1 = create_node(child_map6, TRUE, FALSE);
+			root->child1 = create_node(child_map6, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map6, TRUE, TRUE);
+			root->child1 = create_node(child_map6, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map6);
-			root->child6 = create_node(NULL, FALSE, FALSE);
+			root->child6 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 		
 		result = modify_child_map(child_map7, 7);
 		if (result == 1)
-			root->child1 = create_node(child_map7, TRUE, FALSE);
+			root->child1 = create_node(child_map7, TRUE, FALSE, minmax);
 		else if (result == 2)
-			root->child1 = create_node(child_map7, TRUE, TRUE);
+			root->child1 = create_node(child_map7, TRUE, TRUE, minmax);
 		else
 		{
 			free_map(child_map7);
-			root->child7 = create_node(NULL, FALSE, FALSE);
+			root->child7 = create_node(NULL, FALSE, FALSE, minmax);
 		}
 
 		connect_siblings(root);
@@ -176,7 +176,7 @@ int modify_child_map(int **child_map, int number)
 	}
 }
 
-int* mem_free_tree(struct tree_node *root)
+void mem_free_tree(struct tree_node *root)
 {
 	if (root->child1 == NULL&&root->child2 == NULL&&root->child3 == NULL&&root->child4 == NULL&&
 		root->child5 == NULL&&root->child6 == NULL&&root->child7 == NULL)
@@ -185,14 +185,17 @@ int* mem_free_tree(struct tree_node *root)
 		free(root);
 		return NULL;	//Check if it returns null so super root's child is null (debuging)
 	}
-	int *temp = NULL;
-	temp = mem_free_tree(root->child1);
-	temp = mem_free_tree(root->child2);
-	temp = mem_free_tree(root->child3);
-	temp = mem_free_tree(root->child4);
-	temp = mem_free_tree(root->child5);
-	temp = mem_free_tree(root->child6);
-	root = mem_free_tree(root->child7);
+	
+	mem_free_tree(root->child1);
+	mem_free_tree(root->child2);
+	mem_free_tree(root->child3);
+	mem_free_tree(root->child4);
+	mem_free_tree(root->child5);
+	mem_free_tree(root->child6);
+	mem_free_tree(root->child7);
+
+	free_map(root);
+	free(root);
 }
 
 void free_map(int **map)

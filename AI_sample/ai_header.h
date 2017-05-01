@@ -2,14 +2,17 @@
 #include <stdlib.h>
 #define TRUE 1
 #define FALSE 0
+#define MIN 0
+#define MAX 1
+#define LEAF 2
 
 struct tree_node{
 	int **map;				//map[6][7]
 	int evaluation_value;		//default value is -999
 	int is_in_tree;
-	int is_it_leaf_node;
 	int is_it_winorlose;
-	
+	int min_or_max_or_leaf;			//Use in min_max_function( ) for parent node to choose either min value or max value among child nodes
+									//define MIN 0 ,MAX 1, LEAF 2.  if this value is LEAF, apply eavaluation function to node
 	struct tree_node *child1;
 	struct tree_node *child2;
 	struct tree_node *child3;
@@ -38,9 +41,9 @@ void ai_rule_function(int map[][7]);
 int decide_win_or_lose_or_continue(int map[][7]);
 
 //Tree sturcture functions
-struct tree_node* create_node(int map[][7], int intree, int winorlose);
-void insert_child(struct tree_node *root);
-int* mem_free_tree(struct tree_node *root);
+struct tree_node* create_node(int map[][7], int intree, int winorlose, int minmax);
+void insert_child(struct tree_node *root, int minmax);
+void mem_free_tree(struct tree_node *root);
 void free_map(int **map);
 int** duplicate_root_map(int **root_map);
 int modify_child_map(int **child_map, int number);
