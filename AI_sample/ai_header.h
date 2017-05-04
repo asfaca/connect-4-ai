@@ -6,8 +6,9 @@
 #define MAX 1
 #define LEAF 2
 #define CONTINUE 0
-#define WIN 1
-#define LOSE 2
+#define USERWIN 1
+#define AIWIN 2
+#define DEPTH5
 
 struct tree_node{
 	int **map;				//map[6][7]
@@ -36,6 +37,8 @@ void select_map(int **map, int pick_next);
 int pick_next_map(struct tree_node *root);
 void free_tree(struct tree_node *root);
 
+//Heuristic function.
+
 //Rule algorithm..
 void ai_rule_function(int **map);
 
@@ -56,3 +59,4 @@ void connect_siblings(struct tree_node *root);
 
 //print
 void print_map(int **map);
+void user_select(int **map, int number);

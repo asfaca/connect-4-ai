@@ -21,20 +21,53 @@ struct tree_node* make_full_tree(int **map)
 	//root = max
 	//1 = min
 	//2 = max
-	//3 = leaf
-	int i, k;
-	struct tree_node *temp = NULL, *temp2 = NULL;
+	//3 = min (leaf if depth3)
+	//4 = max (leaf if depth4)
+	int i, k, j, z;
+	struct tree_node *temp = NULL, *temp2 = NULL, *temp3 = NULL, *temp4 = NULL;
 	struct tree_node *root = create_node(map, TRUE, FALSE, MAX);
 	insert_child(root, MIN);
 	temp = root->child1;
+
 	for (i = 0; i < 7; i++)
 	{
 		insert_child(temp, MAX);
 		temp2 = temp->child1;
 		for (k = 0; k < 7; k++)
 		{
+#ifdef DEPTH3
 			insert_child(temp2, LEAF);
 			temp2 = temp2->next_sibling;
+#endif // DEPTH3
+
+#ifdef DEPTH4
+			insert_child(temp2, MIN);
+			temp3 = temp2->child1;
+			for (j = 0; j < 7; j++)
+			{
+				insert_child(temp3, LEAF);
+				temp3 = temp3->next_sibling;
+			}
+			temp2 = temp2->next_sibling;
+#endif // DEPTH4
+
+#ifdef DEPTH5
+			insert_child(temp2, MIN);
+			temp3 = temp2->child1;
+			for (j = 0; j < 7; j++)
+			{
+				insert_child(temp3, MAX);
+				temp4 = temp3->child1;
+				for (z = 0; z < 7; z++)
+				{
+					insert_child(temp4, LEAF);
+					temp4 = temp4->next_sibling;
+				}
+				temp3 = temp3->next_sibling;
+			}
+			temp2 = temp2->next_sibling;
+#endif // DEPTH5
+
 		}
 		temp = temp->next_sibling;
 	}
@@ -44,7 +77,126 @@ struct tree_node* make_full_tree(int **map)
 //count most winning line
 void evaluation_function_version_1(struct tree_node *node)
 {
-	node->evaluation_value = rand()%20;
+	node->evaluation_value = 0;
+	int i, k;
+	int **map = node->map;
+	if (decide_win_or_lose_or_continue(map)==1)
+	{
+		node->evaluation_value = -9999;
+		return;
+	}
+	else if (decide_win_or_lose_or_continue(map) == 2)
+	{
+		node->evaluation_value = 9999;
+		return;
+	}
+	else
+	{
+		//2 point for 2 consecutive stones
+		for (i = 0; i < 6; i++)
+		{
+			for (k = 0; k < 5; k++)
+			{
+				if (map[i][k] == 0 && map[i][k + 1] == 1 && map[i][k + 2] == 1)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 1 && map[i][k + 1] == 1 && map[i][k + 2] == 0)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 0 && map[i][k + 1] == 2 && map[i][k + 2] == 2)
+					node->evaluation_value += 2;
+				if (map[i][k] == 2 && map[i][k + 1] == 2 && map[i][k + 2] == 0)
+					node->evaluation_value += 2;
+			}
+		}
+		for (i = 0; i < 4; i++)
+		{
+			for (k = 0; k < 7; k++)
+			{
+				if (map[i][k] == 1 && map[i + 1][k] == 1 && map[i + 2][k] == 0)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 0 && map[i + 1][k] == 1 && map[i + 2][k] == 1)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 2 && map[i + 1][k] == 2 && map[i + 2][k] == 0)
+					node->evaluation_value += 2;
+				if (map[i][k] == 0 && map[i + 1][k] == 2 && map[i + 2][k] == 2)
+					node->evaluation_value += 2;
+			}
+		}
+		for (i = 0; i < 4; i++)
+		{
+			for (k = 0; k < 5; k++)
+			{
+				if (map[i][k] == 1 && map[i + 1][k + 1] == 1 && map[i + 2][k + 2] == 0)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 0 && map[i + 1][k + 1] == 1 && map[i + 2][k + 2] == 1)
+					node->evaluation_value -= 2;
+				if (map[i][k] == 2 && map[i + 1][k + 1] == 2 && map[i + 2][k + 2] == 0)
+					node->evaluation_value += 2;
+				if (map[i][k] == 0 && map[i + 1][k + 1] == 2 && map[i + 2][k + 2] == 2)
+					node->evaluation_value += 2;
+
+				if (map[i + 2][k] == 1 && map[i + 1][k + 1] == 1 && map[i][k + 2] == 0)
+					node->evaluation_value -= 2;
+				if (map[i + 2][k] == 0 && map[i + 1][k + 1] == 1 && map[i][k + 2] == 1)
+					node->evaluation_value -= 2;
+				if (map[i + 2][k] == 2 && map[i + 1][k + 1] == 2 && map[i][k + 2] == 0)
+					node->evaluation_value += 2;
+				if (map[i + 2][k] == 0 && map[i + 1][k + 1] == 2 && map[i][k + 2] == 2)
+					node->evaluation_value += 2;
+			}
+		}
+		//15 point for 3 consecutive stones
+		for (i = 0; i < 6; i++)
+		{
+			for (k = 0; k < 4; k++)
+			{
+				if (map[i][k] == 1 && map[i][k + 1] == 1 && map[i][k + 2] == 1 && map[i][k + 3] == 0)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 0 && map[i][k + 1] == 1 && map[i][k + 2] == 1 && map[i][k + 3] == 1)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 2 && map[i][k + 1] == 2 && map[i][k + 2] == 2 && map[i][k + 3] == 0)
+					node->evaluation_value += 15;
+				if (map[i][k] == 0 && map[i][k + 1] == 2 && map[i][k + 2] == 2 && map[i][k + 3] == 2)
+					node->evaluation_value += 15;
+			}
+		}
+		for (i = 0; i < 3; i++)
+		{
+			for (k = 0; k < 7; k++)
+			{
+				if (map[i][k] == 1 && map[i + 1][k] == 1 && map[i + 2][k] == 1 && map[i + 3][k] == 0)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 0 && map[i + 1][k] == 1 && map[i + 2][k] == 1 && map[i + 3][k] == 1)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 2 && map[i + 1][k] == 2 && map[i + 2][k] == 2 && map[i + 3][k] == 0)
+					node->evaluation_value += 15;
+				if (map[i][k] == 0 && map[i + 1][k] == 2 && map[i + 2][k] == 2 && map[i + 3][k] == 2)
+					node->evaluation_value += 15;
+			}
+		}
+		for (i = 0; i < 3; i++)
+		{
+			for (k = 0; k < 4; k++)
+			{
+				if (map[i][k] == 1 && map[i + 1][k + 1] == 1 && map[i + 2][k + 1] == 1 && map[i + 3][k + 3] == 0)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 0 && map[i + 1][k + 1] == 1 && map[i + 2][k + 1] == 1 && map[i + 3][k + 3] == 1)
+					node->evaluation_value -= 15;
+				if (map[i][k] == 2 && map[i + 1][k + 1] == 2 && map[i + 2][k + 1] == 2 && map[i + 3][k + 3] == 0)
+					node->evaluation_value += 15;
+				if (map[i][k] == 0 && map[i + 1][k + 1] == 2 && map[i + 2][k + 1] == 2 && map[i + 3][k + 3] == 2)
+					node->evaluation_value += 15;
+
+				if (map[i + 3][k] == 1 && map[i + 2][k + 1] == 1 && map[i + 1][k + 2] == 1 && map[i][k + 3] == 0)
+					node->evaluation_value -= 15;
+				if (map[i + 3][k] == 0 && map[i + 2][k + 1] == 1 && map[i + 1][k + 2] == 1 && map[i][k + 3] == 1)
+					node->evaluation_value -= 15;
+				if (map[i + 3][k] == 2 && map[i + 2][k + 1] == 2 && map[i + 1][k + 2] == 2 && map[i][k + 3] == 0)
+					node->evaluation_value += 15;
+				if (map[i + 3][k] == 0 && map[i + 2][k + 1] == 2 && map[i + 1][k + 2] == 2 && map[i][k + 3] == 2)
+					node->evaluation_value += 15;
+			}
+		}
+	}
 }
 
 void min_max_function(struct tree_node *node)

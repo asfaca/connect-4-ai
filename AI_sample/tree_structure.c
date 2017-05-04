@@ -156,17 +156,34 @@ int** duplicate_root_map(int **root_map)
 int modify_child_map(int **child_map, int number, int minmax_or_leaf)
 {
 	number--;
-	int i, result;
+	int i;
 	for (i = 0; i < 6; i++)
 	{
 		if (child_map[i][number] == 0)
 		{
+#ifdef DEPTH3
 			if (minmax_or_leaf == MIN || minmax_or_leaf == LEAF)
 				child_map[i][number] = 2;
 			else if (minmax_or_leaf == MAX)
 				child_map[i][number] = 1;
+#endif // DEPTH3
+
+#ifdef DEPTH4
+			if (minmax_or_leaf == MIN)
+				child_map[i][number] = 2;
+			else if (minmax_or_leaf == MAX || minmax_or_leaf == LEAF)
+				child_map[i][number] = 1;
+#endif // DEPTH4
+
+#ifdef DEPTH5
+			if (minmax_or_leaf == MIN || minmax_or_leaf == LEAF)
+				child_map[i][number] = 2;
+			else if (minmax_or_leaf == MAX)
+				child_map[i][number] = 1;
+#endif // DEPTH5
+			
 			//it can move and retun 1 as success
-			if ((result = decide_win_or_lose_or_continue(child_map)) == 0)
+			if (decide_win_or_lose_or_continue(child_map) == CONTINUE)
 				return 1;
 			else  //it is the case that it doesn;t need to make child nodes because after modifiying map, state of map is win or lose.  
 				return 2;

@@ -20,7 +20,7 @@ int main(void)
 	int decide_exit = 100;
 	int first;
 	int select_ai_search_or_rule;
-	int user_turn_x, user_turn_y;
+	int user_turn_x;
 
 	printf("Who start first? 1 -> user 2 -> AI\n");
 	scanf("%d", &first);
@@ -31,20 +31,20 @@ int main(void)
 		while (1)
 		{
 			
-			printf("inert location x y : ");
-			scanf("%d%d", &user_turn_x, &user_turn_y);
+			printf("inert location x : ");
+			scanf("%d", &user_turn_x);
 
-			map[user_turn_y - 1][user_turn_x - 1] = 1;
+			user_select(map, --user_turn_x);
 			print_map(map);
 
 			decide_exit = decide_win_or_lose_or_continue(map);
 
-			if (decide_exit == 1)
+			if (decide_exit == USERWIN)
 			{
 				printf("User Win!\n");
 				return 0;
 			}
-			else if (decide_exit == 2)
+			else if (decide_exit == AIWIN)
 			{
 				printf("AI Win!\n");
 				return 0;
@@ -61,12 +61,12 @@ int main(void)
 
 			decide_exit = decide_win_or_lose_or_continue(map);
 
-			if (decide_exit == 1)
+			if (decide_exit == USERWIN)
 			{
 				printf("User Win!\n");
 				return 0;
 			}
-			else if (decide_exit == 2)
+			else if (decide_exit == AIWIN)
 			{
 				printf("AI Win!\n");
 				return 0;
@@ -90,32 +90,32 @@ int main(void)
 
 			decide_exit = decide_win_or_lose_or_continue(map);
 
-			if (decide_exit == 1)
+			if (decide_exit == USERWIN)
 			{
 				printf("User Win!\n");
 				return 0;
 			}
-			else if (decide_exit == 2)
+			else if (decide_exit == AIWIN)
 			{
 				printf("AI Win!\n");
 				return 0;
 			}
 
-			printf("inert location x y : ");
-			scanf("%d%d", &user_turn_x, &user_turn_y);
+			printf("inert location x : ");
+			scanf("%d", &user_turn_x);
 
-			map[user_turn_y - 1][user_turn_x - 1] = 1;
+			user_select(map, --user_turn_x);
 
 			print_map(map);
 
 			decide_exit = decide_win_or_lose_or_continue(map);
 
-			if (decide_exit == 1)
+			if (decide_exit == USERWIN)
 			{
 				printf("User Win!\n");
 				return 0;
 			}
-			else if (decide_exit == 2)
+			else if (decide_exit == AIWIN)
 			{
 				printf("AI Win!\n");
 				return 0;
@@ -124,4 +124,19 @@ int main(void)
 	}
 
 	return 0;
+}
+
+void user_select(int **map, int number)
+{
+	int i;
+	for (i = 0; i < 6; i++)
+	{
+		if (map[i][number] == 0)
+		{
+			map[i][number] = 1;
+			return;
+		}
+		if (i == 5)
+			printf("Wrong place!\n");
+	}
 }
