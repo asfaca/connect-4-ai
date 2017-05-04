@@ -1,9 +1,9 @@
 #include "ai_header.h"
 
-struct tree_node* create_node(int map[][7], int intree, int winorlose, int minmax_or_leaf)
+struct tree_node* create_node(int **map, int intree, int winorlose, int minmax_or_leaf)
 {
 	struct tree_node *node = (struct tree_node*)malloc(sizeof(struct tree_node));
-	if (node = NULL)
+	if (node == NULL)
 		return NULL;
 
 	node->map = map;
@@ -53,7 +53,7 @@ void insert_child(struct tree_node *root, int minmax_or_leaf)
 		int **child_map7 = duplicate_root_map(root->map);
 		int result; // 1 -> can move, 0 -> can not move,  2 -> state is win or lose
 
-		result = modify_child_map(child_map1, 1);
+		result = modify_child_map(child_map1, 1, minmax_or_leaf);
 		if (result == 1)
 			root->child1 = create_node(child_map1, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
@@ -64,66 +64,66 @@ void insert_child(struct tree_node *root, int minmax_or_leaf)
 			root->child1 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 
-		result = modify_child_map(child_map2, 2);
+		result = modify_child_map(child_map2, 2, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map2, TRUE, FALSE, minmax_or_leaf);
+			root->child2 = create_node(child_map2, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map2, TRUE, TRUE, LEAF);
+			root->child2 = create_node(child_map2, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map2);
 			root->child2 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 		
-		result = modify_child_map(child_map3, 3);
+		result = modify_child_map(child_map3, 3, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map3, TRUE, FALSE, minmax_or_leaf);
+			root->child3 = create_node(child_map3, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map3, TRUE, TRUE, LEAF);
+			root->child3 = create_node(child_map3, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map3);
 			root->child3 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 		
-		result = modify_child_map(child_map4, 4);
+		result = modify_child_map(child_map4, 4, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map4, TRUE, FALSE, minmax_or_leaf);
+			root->child4 = create_node(child_map4, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map4, TRUE, TRUE, LEAF);
+			root->child4 = create_node(child_map4, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map4);
 			root->child4 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 		
-		result = modify_child_map(child_map5, 5);
+		result = modify_child_map(child_map5, 5, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map5, TRUE, FALSE, minmax_or_leaf);
+			root->child5 = create_node(child_map5, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map5, TRUE, TRUE, LEAF);
+			root->child5 = create_node(child_map5, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map5);
 			root->child5 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 		
-		result = modify_child_map(child_map6, 6);
+		result = modify_child_map(child_map6, 6, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map6, TRUE, FALSE, minmax_or_leaf);
+			root->child6 = create_node(child_map6, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map6, TRUE, TRUE, LEAF);
+			root->child6 = create_node(child_map6, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map6);
 			root->child6 = create_node(NULL, FALSE, FALSE, minmax_or_leaf);
 		}
 		
-		result = modify_child_map(child_map7, 7);
+		result = modify_child_map(child_map7, 7, minmax_or_leaf);
 		if (result == 1)
-			root->child1 = create_node(child_map7, TRUE, FALSE, minmax_or_leaf);
+			root->child7 = create_node(child_map7, TRUE, FALSE, minmax_or_leaf);
 		else if (result == 2)
-			root->child1 = create_node(child_map7, TRUE, TRUE, LEAF);
+			root->child7 = create_node(child_map7, TRUE, TRUE, LEAF);
 		else
 		{
 			free_map(child_map7);
@@ -140,6 +140,7 @@ int** duplicate_root_map(int **root_map)
 	int i, k;
 	for (i = 0; i < 6; i++)
 		child_map[i] = (int*)malloc(sizeof(int) * 7);
+
 	
 	for (i = 0; i < 6; i++)
 	{
@@ -148,10 +149,11 @@ int** duplicate_root_map(int **root_map)
 			child_map[i][k] = root_map[i][k];
 		}
 	}
+
 	return child_map;
 }
 
-int modify_child_map(int **child_map, int number)
+int modify_child_map(int **child_map, int number, int minmax_or_leaf)
 {
 	number--;
 	int i, result;
@@ -159,7 +161,10 @@ int modify_child_map(int **child_map, int number)
 	{
 		if (child_map[i][number] == 0)
 		{
-			child_map[i][number] = 2;
+			if (minmax_or_leaf == MIN || minmax_or_leaf == LEAF)
+				child_map[i][number] = 2;
+			else if (minmax_or_leaf == MAX)
+				child_map[i][number] = 1;
 			//it can move and retun 1 as success
 			if ((result = decide_win_or_lose_or_continue(child_map)) == 0)
 				return 1;
@@ -181,7 +186,8 @@ void mem_free_tree(struct tree_node *root)
 	if (root->child1 == NULL&&root->child2 == NULL&&root->child3 == NULL&&root->child4 == NULL&&
 		root->child5 == NULL&&root->child6 == NULL&&root->child7 == NULL)
 	{
-		free_map(root);
+		if (root->map != NULL)
+			free_map(root->map);
 		free(root);
 		return;
 	}
@@ -194,7 +200,8 @@ void mem_free_tree(struct tree_node *root)
 	mem_free_tree(root->child6);
 	mem_free_tree(root->child7);
 
-	free_map(root);
+	if (root->map != NULL)
+		free_map(root->map);
 	free(root);
 }
 

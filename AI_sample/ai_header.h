@@ -28,26 +28,31 @@ struct tree_node{
 };
 
 //Search algorithm.
-void ai_search_function(int map[][7]);
-struct tree_node* make_full_tree(int map[][7]);
+void ai_search_function(int **map);
+struct tree_node* make_full_tree(int **map);
 void evaluation_function_version_1(struct tree_node *node);
 void min_max_function(struct tree_node *node);
-void select_map(int map[][7]);
+void select_map(int **map, int pick_next);
+int pick_next_map(struct tree_node *root);
+void free_tree(struct tree_node *root);
 
 //Rule algorithm..
-void ai_rule_function(int map[][7]);
+void ai_rule_function(int **map);
 
 //Decide win, lose or continue
 //0 -> continue
 //1 -> user win
 //2 -> ai win
-int decide_win_or_lose_or_continue(int map[][7]);
+int decide_win_or_lose_or_continue(int **map);
 
 //Tree sturcture functions
-struct tree_node* create_node(int map[][7], int intree, int winorlose, int minmax_or_leaf);
+struct tree_node* create_node(int **map, int intree, int winorlose, int minmax_or_leaf);
 void insert_child(struct tree_node *root, int minmax_or_leaf);
 void mem_free_tree(struct tree_node *root);
 void free_map(int **map);
 int** duplicate_root_map(int **root_map);
-int modify_child_map(int **child_map, int number);
+int modify_child_map(int **child_map, int number, int minmax_or_leaf);
 void connect_siblings(struct tree_node *root);
+
+//print
+void print_map(int **map);

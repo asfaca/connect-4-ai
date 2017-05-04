@@ -1,6 +1,6 @@
 #include "ai_header.h"
 
-void ai_search_function(int map[][7])
+void ai_search_function(int **map)
 {
 	struct tree_node *root = NULL;
 	//Make full tree untill depth 3
@@ -8,25 +8,43 @@ void ai_search_function(int map[][7])
 
 	min_max_function(root);  //min_max_function internally includes evaluation_function.
 
-	select_map(map);
+	select_map(map, pick_next_map(root));
 
-	mem_free_tree(root);
-
+	free_tree(root);
 
 	return 0;
 }
 
 
-struct tree_node* make_full_tree(int map[][7])
+struct tree_node* make_full_tree(int **map)
 {
-	
+	//root = max
+	//1 = min
+	//2 = max
+	//3 = leaf
+	int i, k;
+	struct tree_node *temp = NULL, *temp2 = NULL;
+	struct tree_node *root = create_node(map, TRUE, FALSE, MAX);
+	insert_child(root, MIN);
+	temp = root->child1;
+	for (i = 0; i < 7; i++)
+	{
+		insert_child(temp, MAX);
+		temp2 = temp->child1;
+		for (k = 0; k < 7; k++)
+		{
+			insert_child(temp2, LEAF);
+			temp2 = temp2->next_sibling;
+		}
+		temp = temp->next_sibling;
+	}
+	return root;
 }
 
 //count most winning line
 void evaluation_function_version_1(struct tree_node *node)
 {
-	node->evaluation_value = 0;
-	
+	node->evaluation_value = rand()%20;
 }
 
 void min_max_function(struct tree_node *node)
@@ -78,7 +96,54 @@ void min_max_function(struct tree_node *node)
 	}
 }
 
-void select_map(int map[][7])
+int pick_next_map(struct tree_node *root)
 {
+	int pick_number = 0;
+	int i;
+	struct tree_node *curr = root->child1;
+	for (i = 0; i < 7; i++)
+	{
+		if (curr->is_in_tree == TRUE)
+		{
+			if (root->evaluation_value == curr->evaluation_value)
+				return pick_number;
+			else
+			{
+				curr = curr->next_sibling;
+				pick_number++;
+			}
+		}
+		else
+		{
+			curr = curr->next_sibling;
+			pick_number++;
+		}
+	}
+}
 
+void select_map(int **map, int pick_next)
+{
+	int i, result;
+	for (i = 0; i < 6; i++)
+	{
+		if (map[i][pick_next] == 0)
+		{
+			map[i][pick_next] = 2;
+			return;
+		}
+	}
+}
+
+void free_tree(struct tree_node *root)
+{
+	int i;
+	struct tree_node *curr = root->child1;
+	struct tree_node *temp = NULL;
+	for (i = 0; i < 7; i++)
+	{
+		temp = curr->next_sibling;
+		mem_free_tree(curr);
+		curr = temp;
+	}
+	free(root);
 }
