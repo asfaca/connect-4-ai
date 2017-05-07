@@ -8,7 +8,7 @@
 #define CONTINUE 0
 #define USERWIN 1
 #define AIWIN 2
-#define DEPTH5
+#define DEPTH6
 
 struct tree_node{
 	int **map;				//map[6][7]

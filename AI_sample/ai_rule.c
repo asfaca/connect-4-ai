@@ -57,13 +57,15 @@ int decide_win_or_lose_or_continue(int **map)
 
 void print_map(int **map)
 {
-	int i, k;
+	int i, k, j;
+	printf("\n");
 	for (i = 5; i >= 0 ; i--)
 	{
+		printf("%d  ", j = i + 1);
 		for (k = 0; k < 7; k++)
 		{
 			if (map[i][k] == 1)
-				printf("X  ");
+				printf("@  ");
 			else if (map[i][k] == 2)
 				printf("O  ");
 			else
@@ -72,6 +74,6 @@ void print_map(int **map)
 		}
 		printf("\n");
 	}
-	printf("-  -  -  -  -  -  -  \n");
-	printf("1  2  3  4  5  6  7  \n");
+	printf("   -  -  -  -  -  -  -  \n");
+	printf("   1  2  3  4  5  6  7  \n");
 }

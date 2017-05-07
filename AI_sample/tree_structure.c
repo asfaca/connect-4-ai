@@ -7,7 +7,7 @@ struct tree_node* create_node(int **map, int intree, int winorlose, int minmax_o
 		return NULL;
 
 	node->map = map;
-	node->evaluation_value = -999;	
+	node->evaluation_value = 9999;	
 	node->is_in_tree = intree;
 	node->min_or_max_or_leaf = minmax_or_leaf;
 	node->is_it_winorlose = winorlose;
@@ -161,6 +161,14 @@ int modify_child_map(int **child_map, int number, int minmax_or_leaf)
 	{
 		if (child_map[i][number] == 0)
 		{
+#ifdef DEPTH2
+			if (minmax_or_leaf == MIN)
+				child_map[i][number] = 2;
+			else if (minmax_or_leaf == MAX || minmax_or_leaf == LEAF)
+				child_map[i][number] = 1;
+#endif // DEPTH2
+
+
 #ifdef DEPTH3
 			if (minmax_or_leaf == MIN || minmax_or_leaf == LEAF)
 				child_map[i][number] = 2;
@@ -181,6 +189,13 @@ int modify_child_map(int **child_map, int number, int minmax_or_leaf)
 			else if (minmax_or_leaf == MAX)
 				child_map[i][number] = 1;
 #endif // DEPTH5
+
+#ifdef DEPTH6
+			if (minmax_or_leaf == MIN)
+				child_map[i][number] = 2;
+			else if (minmax_or_leaf == MAX || minmax_or_leaf == LEAF)
+				child_map[i][number] = 1;
+#endif // DEPTH6
 			
 			//it can move and retun 1 as success
 			if (decide_win_or_lose_or_continue(child_map) == CONTINUE)

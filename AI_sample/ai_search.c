@@ -23,12 +23,14 @@ struct tree_node* make_full_tree(int **map)
 	//2 = max
 	//3 = min (leaf if depth3)
 	//4 = max (leaf if depth4)
-	int i, k, j, z;
-	struct tree_node *temp = NULL, *temp2 = NULL, *temp3 = NULL, *temp4 = NULL;
+	int i, k, j, z, w;
+	struct tree_node *temp = NULL, *temp2 = NULL, *temp3 = NULL, *temp4 = NULL, *temp5 = NULL;
 	struct tree_node *root = create_node(map, TRUE, FALSE, MAX);
 	insert_child(root, MIN);
 	temp = root->child1;
 
+
+	
 	for (i = 0; i < 7; i++)
 	{
 		insert_child(temp, MAX);
@@ -68,9 +70,32 @@ struct tree_node* make_full_tree(int **map)
 			temp2 = temp2->next_sibling;
 #endif // DEPTH5
 
+#ifdef DEPTH6
+			insert_child(temp2, MIN);
+			temp3 = temp2->child1;
+			for (j = 0; j < 7; j++)
+			{
+				insert_child(temp3, MAX);
+				temp4 = temp3->child1;
+				for (z = 0; z < 7; z++)
+				{
+					insert_child(temp4, MIN);
+					temp5 = temp4->child1;
+					for (w = 0; w < 7; w++)
+					{
+						insert_child(temp5, LEAF);
+						temp5 = temp5->next_sibling;
+					}
+					temp4 = temp4->next_sibling;
+				}
+				temp3 = temp3->next_sibling;
+			}
+			temp2 = temp2->next_sibling;
+#endif // DEPTH6
 		}
 		temp = temp->next_sibling;
 	}
+	
 	return root;
 }
 
@@ -80,12 +105,12 @@ void evaluation_function_version_1(struct tree_node *node)
 	node->evaluation_value = 0;
 	int i, k;
 	int **map = node->map;
-	if (decide_win_or_lose_or_continue(map)==1)
+	if (decide_win_or_lose_or_continue(map) == USERWIN)
 	{
 		node->evaluation_value = -9999;
 		return;
 	}
-	else if (decide_win_or_lose_or_continue(map) == 2)
+	else if (decide_win_or_lose_or_continue(map) == AIWIN)
 	{
 		node->evaluation_value = 9999;
 		return;
@@ -144,19 +169,19 @@ void evaluation_function_version_1(struct tree_node *node)
 					node->evaluation_value += 2;
 			}
 		}
-		//15 point for 3 consecutive stones
+		//4 point for 3 consecutive stones
 		for (i = 0; i < 6; i++)
 		{
 			for (k = 0; k < 4; k++)
 			{
 				if (map[i][k] == 1 && map[i][k + 1] == 1 && map[i][k + 2] == 1 && map[i][k + 3] == 0)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 0 && map[i][k + 1] == 1 && map[i][k + 2] == 1 && map[i][k + 3] == 1)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 2 && map[i][k + 1] == 2 && map[i][k + 2] == 2 && map[i][k + 3] == 0)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 				if (map[i][k] == 0 && map[i][k + 1] == 2 && map[i][k + 2] == 2 && map[i][k + 3] == 2)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 			}
 		}
 		for (i = 0; i < 3; i++)
@@ -164,13 +189,13 @@ void evaluation_function_version_1(struct tree_node *node)
 			for (k = 0; k < 7; k++)
 			{
 				if (map[i][k] == 1 && map[i + 1][k] == 1 && map[i + 2][k] == 1 && map[i + 3][k] == 0)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 0 && map[i + 1][k] == 1 && map[i + 2][k] == 1 && map[i + 3][k] == 1)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 2 && map[i + 1][k] == 2 && map[i + 2][k] == 2 && map[i + 3][k] == 0)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 				if (map[i][k] == 0 && map[i + 1][k] == 2 && map[i + 2][k] == 2 && map[i + 3][k] == 2)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 			}
 		}
 		for (i = 0; i < 3; i++)
@@ -178,22 +203,22 @@ void evaluation_function_version_1(struct tree_node *node)
 			for (k = 0; k < 4; k++)
 			{
 				if (map[i][k] == 1 && map[i + 1][k + 1] == 1 && map[i + 2][k + 1] == 1 && map[i + 3][k + 3] == 0)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 0 && map[i + 1][k + 1] == 1 && map[i + 2][k + 1] == 1 && map[i + 3][k + 3] == 1)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i][k] == 2 && map[i + 1][k + 1] == 2 && map[i + 2][k + 1] == 2 && map[i + 3][k + 3] == 0)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 				if (map[i][k] == 0 && map[i + 1][k + 1] == 2 && map[i + 2][k + 1] == 2 && map[i + 3][k + 3] == 2)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 
 				if (map[i + 3][k] == 1 && map[i + 2][k + 1] == 1 && map[i + 1][k + 2] == 1 && map[i][k + 3] == 0)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i + 3][k] == 0 && map[i + 2][k + 1] == 1 && map[i + 1][k + 2] == 1 && map[i][k + 3] == 1)
-					node->evaluation_value -= 15;
+					node->evaluation_value -= 4;
 				if (map[i + 3][k] == 2 && map[i + 2][k + 1] == 2 && map[i + 1][k + 2] == 2 && map[i][k + 3] == 0)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 				if (map[i + 3][k] == 0 && map[i + 2][k + 1] == 2 && map[i + 1][k + 2] == 2 && map[i][k + 3] == 2)
-					node->evaluation_value += 15;
+					node->evaluation_value += 4;
 			}
 		}
 	}
@@ -231,6 +256,7 @@ void min_max_function(struct tree_node *node)
 			curr = curr->next_sibling;
 		}
 		node->evaluation_value = max;
+		return;
 	}
 	else if (node->min_or_max_or_leaf == MIN)
 	{
@@ -245,12 +271,12 @@ void min_max_function(struct tree_node *node)
 			curr = curr->next_sibling;
 		}
 		node->evaluation_value = min;
+		return;
 	}
 }
 
 int pick_next_map(struct tree_node *root)
 {
-	int pick_number = 0;
 	int i;
 	struct tree_node *curr = root->child1;
 	for (i = 0; i < 7; i++)
@@ -258,18 +284,12 @@ int pick_next_map(struct tree_node *root)
 		if (curr->is_in_tree == TRUE)
 		{
 			if (root->evaluation_value == curr->evaluation_value)
-				return pick_number;
+				return i;
 			else
-			{
 				curr = curr->next_sibling;
-				pick_number++;
-			}
 		}
 		else
-		{
 			curr = curr->next_sibling;
-			pick_number++;
-		}
 	}
 }
 

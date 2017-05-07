@@ -21,6 +21,7 @@ Global
 		{9A79CA38-220E-411D-B35C-F011590287DA}.Release|x64.Build.0 = Release|x64
 		{9A79CA38-220E-411D-B35C-F011590287DA}.Release|x86.ActiveCfg = Release|Win32
 		{9A79CA38-220E-411D-B35C-F011590287DA}.Release|x86.Build.0 = Release|Win32
+		{9A79CA38-220E-411D-B35C-F011590287DA}.Release|x86.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

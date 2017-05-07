@@ -12,117 +12,129 @@ int main(void)
 	{
 		map[i] = (int*)malloc(sizeof(int) * 7);
 	}
-	for (i = 0; i < 6; i++)
-	{
-		for (k = 0; k < 7; k++)
-			map[i][k] = 0;
-	}
+	
 	int decide_exit = 100;
 	int first;
 	int select_ai_search_or_rule;
 	int user_turn_x;
+	int regame;
 
-	printf("Who start first? 1 -> user 2 -> AI\n");
-	scanf("%d", &first);
-	print_map(map);
-
-	if (first == 1)
+	while (1)
 	{
-		while (1)
+		for (i = 0; i < 6; i++)
 		{
-			
-			printf("inert location x : ");
-			scanf("%d", &user_turn_x);
+			for (k = 0; k < 7; k++)
+				map[i][k] = 0;
+		}
 
-			user_select(map, --user_turn_x);
-			print_map(map);
+		printf("Who start first? 1 -> user 2 -> AI\n");
+		scanf("%d", &first);
+		print_map(map);
 
-			decide_exit = decide_win_or_lose_or_continue(map);
-
-			if (decide_exit == USERWIN)
+		if (first == 1)
+		{
+			while (1)
 			{
-				printf("User Win!\n");
-				return 0;
-			}
-			else if (decide_exit == AIWIN)
-			{
-				printf("AI Win!\n");
-				return 0;
-			}
 
-			printf("Select which ai version to use. search algorithm = 1, rule =2\n");
-			scanf("%d", &select_ai_search_or_rule);
+				printf("inert location x : ");
+				scanf("%d", &user_turn_x);
 
-			if (select_ai_search_or_rule == 1)
-				ai_search_function(map);
-			else if (select_ai_search_or_rule == 2)
-				ai_rule_function(map);
-			print_map(map);
+				user_select(map, --user_turn_x);
+				print_map(map);
 
-			decide_exit = decide_win_or_lose_or_continue(map);
+				decide_exit = decide_win_or_lose_or_continue(map);
 
-			if (decide_exit == USERWIN)
-			{
-				printf("User Win!\n");
-				return 0;
-			}
-			else if (decide_exit == AIWIN)
-			{
-				printf("AI Win!\n");
-				return 0;
+				if (decide_exit == USERWIN)
+				{
+					printf("User Win!\n");
+					break;
+				}
+				else if (decide_exit == AIWIN)
+				{
+					printf("AI Win!\n");
+					break;
+				}
+
+				/*printf("Select which ai version to use. search algorithm = 1, rule =2\n");
+				scanf("%d", &select_ai_search_or_rule);*/
+
+				/*if (select_ai_search_or_rule == 1)*/
+					ai_search_function(map);
+				/*else if (select_ai_search_or_rule == 2)
+					ai_rule_function(map);*/
+				print_map(map);
+
+				decide_exit = decide_win_or_lose_or_continue(map);
+
+				if (decide_exit == USERWIN)
+				{
+					printf("User Win!\n");
+					break;
+				}
+				else if (decide_exit == AIWIN)
+				{
+					printf("AI Win!\n");
+					break;
+				}
 			}
 		}
-	}
-	else if (first == 2)
-	{
-		while (1)
+		else if (first == 2)
 		{
-			print_map(map);
-			printf("Select which ai version to use. search algorithm = 1, rule =2\n");
-			scanf("%d", &select_ai_search_or_rule);
-
-			if (select_ai_search_or_rule == 1)
-				ai_search_function(map);
-			else if (select_ai_search_or_rule == 2)
-				ai_rule_function(map);
-
-			print_map(map);
-
-			decide_exit = decide_win_or_lose_or_continue(map);
-
-			if (decide_exit == USERWIN)
+			while (1)
 			{
-				printf("User Win!\n");
-				return 0;
-			}
-			else if (decide_exit == AIWIN)
-			{
-				printf("AI Win!\n");
-				return 0;
-			}
+				/*printf("Select which ai version to use. search algorithm = 1, rule =2\n");
+				scanf("%d", &select_ai_search_or_rule);*/
 
-			printf("inert location x : ");
-			scanf("%d", &user_turn_x);
+				/*if (select_ai_search_or_rule == 1)*/
+					ai_search_function(map);
+				/*else if (select_ai_search_or_rule == 2)
+					ai_rule_function(map);*/
 
-			user_select(map, --user_turn_x);
+				print_map(map);
 
-			print_map(map);
+				decide_exit = decide_win_or_lose_or_continue(map);
 
-			decide_exit = decide_win_or_lose_or_continue(map);
+				if (decide_exit == USERWIN)
+				{
+					printf("User Win!\n");
+					break;
+				}
+				else if (decide_exit == AIWIN)
+				{
+					printf("AI Win!\n");
+					break;
+				}
 
-			if (decide_exit == USERWIN)
-			{
-				printf("User Win!\n");
-				return 0;
-			}
-			else if (decide_exit == AIWIN)
-			{
-				printf("AI Win!\n");
-				return 0;
+				printf("inert location x : ");
+				scanf("%d", &user_turn_x);
+
+				user_select(map, --user_turn_x);
+
+				print_map(map);
+
+				decide_exit = decide_win_or_lose_or_continue(map);
+
+				if (decide_exit == USERWIN)
+				{
+					printf("User Win!\n");
+					break;
+				}
+				else if (decide_exit == AIWIN)
+				{
+					printf("AI Win!\n");
+					break;
+				}
 			}
 		}
-	}
 
+		printf("\n");
+		printf("Do you want regame? 1 ok   2 no ");
+		scanf("%d", &regame);
+
+		if (regame == 2)
+			return 0;
+	}
+	
 	return 0;
 }
 
