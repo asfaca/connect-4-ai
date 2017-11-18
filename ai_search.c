@@ -12,7 +12,7 @@ void ai_search_function(int **map)
 
 	free_tree(root);
 
-	return 0;
+	return;
 }
 
 
@@ -295,7 +295,7 @@ int pick_next_map(struct tree_node *root)
 
 void select_map(int **map, int pick_next)
 {
-	int i, result;
+	int i;
 	for (i = 0; i < 6; i++)
 	{
 		if (map[i][pick_next] == 0)

@@ -37,11 +37,6 @@ void select_map(int **map, int pick_next);
 int pick_next_map(struct tree_node *root);
 void free_tree(struct tree_node *root);
 
-//Heuristic function.
-
-//Rule algorithm..
-void ai_rule_function(int **map);
-
 //Decide win, lose or continue
 //0 -> continue
 //1 -> user win

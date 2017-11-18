@@ -1,10 +1,5 @@
 #include "ai_header.h"
 
-void ai_rule_function(int **map)
-{
-
-}
-
 int decide_win_or_lose_or_continue(int **map)
 {
 	int i, k;

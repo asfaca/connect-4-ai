@@ -15,7 +15,6 @@ int main(void)
 	
 	int decide_exit = 100;
 	int first;
-	int select_ai_search_or_rule;
 	int user_turn_x;
 	int regame;
 
@@ -55,13 +54,8 @@ int main(void)
 					break;
 				}
 
-				/*printf("Select which ai version to use. search algorithm = 1, rule =2\n");
-				scanf("%d", &select_ai_search_or_rule);*/
-
-				/*if (select_ai_search_or_rule == 1)*/
-					ai_search_function(map);
-				/*else if (select_ai_search_or_rule == 2)
-					ai_rule_function(map);*/
+				ai_search_function(map);
+				
 				print_map(map);
 
 				decide_exit = decide_win_or_lose_or_continue(map);
@@ -82,14 +76,8 @@ int main(void)
 		{
 			while (1)
 			{
-				/*printf("Select which ai version to use. search algorithm = 1, rule =2\n");
-				scanf("%d", &select_ai_search_or_rule);*/
-
-				/*if (select_ai_search_or_rule == 1)*/
-					ai_search_function(map);
-				/*else if (select_ai_search_or_rule == 2)
-					ai_rule_function(map);*/
-
+				ai_search_function(map);
+				
 				print_map(map);
 
 				decide_exit = decide_win_or_lose_or_continue(map);
